@@ -70,6 +70,49 @@ pytest -q
 
 ---
 
+## GitHub Pages Demo
+
+A live demo and host page are published automatically to **GitHub Pages** whenever
+changes are merged to `main`.
+
+| Resource | URL |
+|---|---|
+| Live demo | `https://tibbles1996.github.io/JumpTek-2.0.1/` |
+| Widget script | `https://tibbles1996.github.io/JumpTek-2.0.1/jumptek-widget.js` |
+
+### Enabling GitHub Pages (one-time setup)
+
+1. Go to **Settings → Pages** in the repository.
+2. Under *Source*, choose **GitHub Actions**.
+3. Push or merge to `main` – the `Deploy to GitHub Pages` workflow publishes
+   `docs/` automatically.
+
+### Embedding from the Pages URL
+
+Once GitHub Pages is enabled, reference the hosted widget script from any page:
+
+```html
+<!-- 1. Load the widget script from GitHub Pages -->
+<script src="https://tibbles1996.github.io/JumpTek-2.0.1/jumptek-widget.js"></script>
+
+<!-- 2. Reserve a container anywhere on your page -->
+<div id="jumptek-host"></div>
+
+<!-- 3. Initialize -->
+<script>
+  JumpTekWidget.init({
+    container: '#jumptek-host',
+    serverUrl: 'wss://your-server.example.com',  // JumpTek backend URL
+    fps: 15,
+    onEvent: function (data) {
+      console.log(data);
+    }
+  });
+</script>
+```
+
+---
+
 ## Embedding the Widget
 
 The widget is a **zero-dependency, self-contained JavaScript file**.
@@ -79,7 +122,7 @@ No build step is required on the host page.
 
 ```html
 <!-- 1. Load the widget script -->
-<script src="https://your-cdn.example.com/jumptek-widget.js"></script>
+<script src="https://tibbles1996.github.io/JumpTek-2.0.1/jumptek-widget.js"></script>
 
 <!-- 2. Reserve a container anywhere on your page -->
 <div id="jumptek-host"></div>
@@ -97,8 +140,9 @@ No build step is required on the host page.
 </script>
 ```
 
-Open `widget/example.html` in your browser alongside a running local server to see
-a complete working integration.
+Open `widget/example.html` in your browser alongside a running local server, or
+visit the [live GitHub Pages demo](https://tibbles1996.github.io/JumpTek-2.0.1/)
+to see a complete working integration.
 
 ### Configuration options
 

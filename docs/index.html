@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JumpTek Widget Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0d0d0d;
+      color: #eee;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111;
+      border-bottom: 1px solid #222;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header h1 span { color: #4fc; }
+
+    header p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    main {
+      display: flex;
+      gap: 24px;
+      padding: 32px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Widget column */
+    .widget-column {
+      flex: 0 0 440px;
+    }
+
+    #jumptek-host {
+      width: 100%;
+      min-height: 200px;
+    }
+
+    /* Config + info panel */
+    .info-column {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: #161616;
+      border: 1px solid #262626;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4fc;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #eee;
+      font-size: 13px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: #4fc;
+    }
+
+    button.apply-btn {
+      background: #4fc;
+      color: #111;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button.apply-btn:hover { background: #3da; }
+
+    #event-output {
+      height: 130px;
+      overflow-y: auto;
+      background: #0a0a0a;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #4fc;
+      border: 1px solid #1e1e1e;
+    }
+
+    pre {
+      background: #0a0a0a;
+      border: 1px solid #1e1e1e;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 11.5px;
+      overflow-x: auto;
+      color: #aaa;
+      margin: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #444;
+    }
+
+    footer a { color: #666; text-decoration: none; }
+    footer a:hover { color: #4fc; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Jump<span>Tek</span> Widget Demo</h1>
+    <p>Live trampoline jump analysis — powered by <a href="https://github.com/Tibbles1996/JumpTek-2.0.1" style="color:#4fc;text-decoration:none;">JumpTek 2.0.1</a></p>
+  </div>
+</header>
+
+<main>
+
+  <!-- Widget mount point -->
+  <div class="widget-column">
+    <div id="jumptek-host"></div>
+  </div>
+
+  <!-- Config & info -->
+  <div class="info-column">
+
+    <div class="card">
+      <h2>Configuration</h2>
+      <label for="server-url">Backend WebSocket URL</label>
+      <input id="server-url" type="text" value="ws://localhost:8000"
+             placeholder="ws://your-server.example.com" />
+
+      <label for="fps">Frames per second</label>
+      <input id="fps" type="number" value="15" min="1" max="30" />
+
+      <button class="apply-btn" onclick="applyConfig()">Apply &amp; Restart Widget</button>
+    </div>
+
+    <div class="card">
+      <h2>Live Events</h2>
+      <div id="event-output"></div>
+    </div>
+
+    <div class="card">
+      <h2>Embed on your page</h2>
+      <pre>&lt;!-- 1. Load the widget script --&gt;
+&lt;script src="https://tibbles1996.github.io/JumpTek-2.0.1/jumptek-widget.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Reserve a container --&gt;
+&lt;div id="jumptek-host"&gt;&lt;/div&gt;
+
+&lt;!-- 3. Initialize --&gt;
+&lt;script&gt;
+  JumpTekWidget.init({
+    container: '#jumptek-host',
+    serverUrl: 'wss://your-server.example.com',
+    fps: 15,
+    onEvent: function(data) { console.log(data); }
+  });
+&lt;/script&gt;</pre>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <a href="https://github.com/Tibbles1996/JumpTek-2.0.1">GitHub Repository</a>
+  &nbsp;·&nbsp;
+  <a href="jumptek-widget.js">Raw widget script</a>
+</footer>
+
+<!-- Load the widget script (placed alongside this file by the CI workflow) -->
+<script src="jumptek-widget.js"></script>
+
+<script>
+  var output = document.getElementById('event-output');
+
+  function applyConfig() {
+    var serverUrl = document.getElementById('server-url').value.trim() || 'ws://localhost:8000';
+    var fps = parseInt(document.getElementById('fps').value, 10) || 15;
+
+    JumpTekWidget.init({
+      container: '#jumptek-host',
+      serverUrl: serverUrl,
+      fps: fps,
+      onEvent: function (data) {
+        var line = document.createElement('div');
+        line.textContent = JSON.stringify(data);
+        output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
+        while (output.children.length > 40) {
+          output.removeChild(output.firstChild);
+        }
+      }
+    });
+  }
+
+  // Mount with defaults on page load
+  applyConfig();
+</script>
+
+</body>
+</html>
