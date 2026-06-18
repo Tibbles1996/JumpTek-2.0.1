@@ -5,6 +5,10 @@ from typing import Any
 
 import numpy as np
 
+# Low-confidence sentinel used when inference fails and we fall back to the
+# previous frame's keypoints (or the frame-centre default).
+FALLBACK_CONFIDENCE = 0.2
+
 
 @dataclass
 class PoseResult:
@@ -32,7 +36,7 @@ class PoseTracker:
         height, width = frame_shape[:2]
         center_x, center_y = width / 2.0, height / 2.0
         keypoints = np.array([[center_x, center_y] for _ in range(17)], dtype=np.float32)
-        confidence = np.array([0.2 for _ in range(17)], dtype=np.float32)
+        confidence = np.array([FALLBACK_CONFIDENCE for _ in range(17)], dtype=np.float32)
         return keypoints, confidence
 
     def _infer(self, frame: np.ndarray) -> tuple[np.ndarray | None, np.ndarray | None]:
@@ -70,7 +74,7 @@ class PoseTracker:
         if raw_keypoints is None or raw_confidence is None:
             # Reuse last known pose rather than defaulting to frame center
             if self._prev_keypoints is not None:
-                return PoseResult(keypoints=self._prev_keypoints.tolist(), confidence=[0.2] * 17)
+                return PoseResult(keypoints=self._prev_keypoints.tolist(), confidence=[FALLBACK_CONFIDENCE] * 17)
             raw_keypoints, raw_confidence = self._default_keypoints(frame.shape)
 
         if self._prev_keypoints is None:

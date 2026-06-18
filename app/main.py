@@ -13,7 +13,10 @@ app = FastAPI(title="JumpTek AI Engine", version="2.0.1")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    # Credentials (cookies/auth headers) are only safe when specific origins are listed.
+    # When cors_origins is the wildcard "*", browsers block credentialed requests anyway,
+    # so we disable allow_credentials to stay spec-compliant and avoid a security warning.
+    allow_credentials="*" not in settings.cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

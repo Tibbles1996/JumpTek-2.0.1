@@ -10,6 +10,22 @@ try:
 except Exception:  # pragma: no cover - optional dependency
     cv2 = None
 
+# Fraction of the person's bounding-box width added on each side when
+# estimating the trampoline bed extent from YOLO person detections.
+HORIZONTAL_EXPANSION_FACTOR = 0.2
+
+# Fraction of the person's bounding-box height from the top to skip
+# (ignores head/torso region; trampoline is beneath the person's feet).
+UPPER_BODY_OFFSET_RATIO = 0.4
+
+# Minimum contour area as a fraction of the total frame area used during
+# OpenCV edge-based detection to filter out small spurious contours.
+MIN_CONTOUR_AREA_RATIO = 0.04
+
+# Padding added around the detected bed polygon to define the wider
+# "trampoline frame" region (5% of frame width/height on each side).
+FRAME_PADDING_RATIO = 0.05
+
 
 @dataclass
 class TrampolineDetection:
@@ -61,10 +77,8 @@ class TrampolineDetector:
             y2 = float(np.max(boxes[:, 3]))
 
             height, width = frame.shape[:2]
-            # Trampoline bed is estimated at the lower 60% of the person region,
-            # expanded horizontally by 20% to include mat edges
-            h_expand = (x2 - x1) * 0.2
-            bed_y1 = y1 + (y2 - y1) * 0.4  # ignore upper body
+            h_expand = (x2 - x1) * HORIZONTAL_EXPANSION_FACTOR
+            bed_y1 = y1 + (y2 - y1) * UPPER_BODY_OFFSET_RATIO
             bed_polygon = [
                 [max(0.0, x1 - h_expand), bed_y1],
                 [min(float(width), x2 + h_expand), bed_y1],
@@ -86,7 +100,7 @@ class TrampolineDetector:
             edges = cv2.Canny(blurred, 30, 100)
             contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-            min_area = width * height * 0.04
+            min_area = width * height * MIN_CONTOUR_AREA_RATIO
             best_rect: Any | None = None
             best_area = 0.0
 
@@ -111,7 +125,7 @@ class TrampolineDetector:
     def detect(self, frame: np.ndarray) -> TrampolineDetection:
         height, width = frame.shape[:2]
 
-        # Hardcoded fallback box (center 60% of frame)
+        # Hardcoded fallback box (centre 60% of frame)
         x1, y1 = int(width * 0.2), int(height * 0.25)
         x2, y2 = int(width * 0.8), int(height * 0.75)
         bed_polygon: list[list[float]] = [[x1, y1], [x2, y1], [x2, y2], [x1, y2]]
@@ -123,10 +137,10 @@ class TrampolineDetector:
 
         xs = [p[0] for p in bed_polygon]
         ys = [p[1] for p in bed_polygon]
-        fx1 = max(0.0, min(xs) - width * 0.05)
-        fy1 = max(0.0, min(ys) - height * 0.05)
-        fx2 = min(float(width), max(xs) + width * 0.05)
-        fy2 = min(float(height), max(ys) + height * 0.05)
+        fx1 = max(0.0, min(xs) - width * FRAME_PADDING_RATIO)
+        fy1 = max(0.0, min(ys) - height * FRAME_PADDING_RATIO)
+        fx2 = min(float(width), max(xs) + width * FRAME_PADDING_RATIO)
+        fy2 = min(float(height), max(ys) + height * FRAME_PADDING_RATIO)
         frame_polygon: list[list[float]] = [[fx1, fy1], [fx2, fy1], [fx2, fy2], [fx1, fy2]]
 
         mask = np.zeros((height, width), dtype=np.uint8)
