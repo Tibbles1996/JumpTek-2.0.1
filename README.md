@@ -84,7 +84,7 @@ No build step is required on the host page.
 <!-- 2. Reserve a container anywhere on your page -->
 <div id="jumptek-host"></div>
 
-<!-- 3. Initialise -->
+<!-- 3. Initialize -->
 <script>
   JumpTekWidget.init({
     container: '#jumptek-host',          // CSS selector or DOM element
