@@ -179,9 +179,9 @@
 
     <div class="card">
       <h2>Configuration</h2>
-      <label for="server-url">Backend WebSocket URL</label>
+      <label for="server-url">Backend WebSocket URL (use wss:// for production)</label>
       <input id="server-url" type="text" value="ws://localhost:8000"
-             placeholder="ws://your-server.example.com" />
+             placeholder="wss://your-server.example.com" />
 
       <label for="fps">Frames per second</label>
       <input id="fps" type="number" value="15" min="1" max="30" />
@@ -196,8 +196,9 @@
 
     <div class="card">
       <h2>Embed on your page</h2>
-      <pre>&lt;!-- 1. Load the widget script --&gt;
-&lt;script src="https://tibbles1996.github.io/JumpTek-2.0.1/jumptek-widget.js"&gt;&lt;/script&gt;
+      <pre>&lt;!-- 1. Load the widget script                                --&gt;
+&lt;!--    Replace the URL below with your own Pages/CDN URL     --&gt;
+&lt;script src="https://&lt;username&gt;.github.io/&lt;repo&gt;/jumptek-widget.js"&gt;&lt;/script&gt;
 
 &lt;!-- 2. Reserve a container --&gt;
 &lt;div id="jumptek-host"&gt;&lt;/div&gt;

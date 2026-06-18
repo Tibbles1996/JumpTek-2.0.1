@@ -80,6 +80,9 @@ changes are merged to `main`.
 | Live demo | `https://tibbles1996.github.io/JumpTek-2.0.1/` |
 | Widget script | `https://tibbles1996.github.io/JumpTek-2.0.1/jumptek-widget.js` |
 
+> **Note:** If you fork this repository, replace `tibbles1996` with your GitHub
+> username and `JumpTek-2.0.1` with your repository name in all URLs above.
+
 ### Enabling GitHub Pages (one-time setup)
 
 1. Go to **Settings → Pages** in the repository.
