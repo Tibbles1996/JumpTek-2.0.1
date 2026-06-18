@@ -7,4 +7,4 @@ services:
     healthCheckPath: /health
     envVars:
       - key: CORS_ORIGINS
-        sync: false   # Set this to your Lovable app URL after deployment, e.g. https://your-app.lovable.app
+        value: "*"   # Replace with your Lovable app URL after deployment, e.g. https://your-app.lovable.app

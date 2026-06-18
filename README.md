@@ -69,4 +69,4 @@ pytest -q
    ```
    Then call the API from your frontend:
    - REST: `POST $VITE_API_URL/process-video`
-   - WebSocket: `wss://$VITE_API_URL/live`
+   - WebSocket: replace `https://` with `wss://`, e.g. `wss://jumptek-engine.onrender.com/live`

@@ -15,9 +15,14 @@ class Settings(BaseModel):
     max_frames_debug_save: int = Field(default=200)
     debug_output_dir: str = Field(default="/tmp/jumptek-debug")
     # Comma-separated list of allowed CORS origins.
-    # Set CORS_ORIGINS env var in production, e.g. "https://your-app.lovable.app"
+    # Defaults to "*" (allow all) for development convenience.
+    # In production, set the CORS_ORIGINS env var to your Lovable app URL,
+    # e.g. "https://your-app.lovable.app". WARNING: "*" allows any browser
+    # origin and must NOT be used in production with credentials enabled.
     cors_origins: list[str] = Field(
-        default_factory=lambda: os.environ.get("CORS_ORIGINS", "*").split(",")
+        default_factory=lambda: [
+            o for o in os.environ.get("CORS_ORIGINS", "*").split(",") if o.strip()
+        ] or ["*"]
     )
 
 
