@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: jumptek-engine
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: CORS_ORIGINS
+        sync: false   # Set this to your Lovable app URL after deployment, e.g. https://your-app.lovable.app

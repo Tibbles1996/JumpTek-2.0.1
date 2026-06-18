@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pydantic import BaseModel, Field
 
@@ -13,6 +14,11 @@ class Settings(BaseModel):
     default_fps: float = Field(default=30.0)
     max_frames_debug_save: int = Field(default=200)
     debug_output_dir: str = Field(default="/tmp/jumptek-debug")
+    # Comma-separated list of allowed CORS origins.
+    # Set CORS_ORIGINS env var in production, e.g. "https://your-app.lovable.app"
+    cors_origins: list[str] = Field(
+        default_factory=lambda: os.environ.get("CORS_ORIGINS", "*").split(",")
+    )
 
 
 @lru_cache(maxsize=1)
