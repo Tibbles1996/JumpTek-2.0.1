@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JumpTek Widget – Host Page Example</title>
+  <style>
+    /* This is the HOST page's own styles – completely independent of the widget */
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: system-ui, sans-serif;
+      background: #f0f0f0;
+      color: #333;
+    }
+    h1 { font-size: 1.4rem; margin-bottom: 4px; }
+    p  { margin: 0 0 24px; color: #666; }
+
+    .page-layout {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    /* The host page simply allocates space for the widget */
+    #jumptek-host {
+      width: 420px;
+      min-height: 200px;
+    }
+
+    .info-panel {
+      flex: 1;
+      min-width: 260px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    }
+    .info-panel h2 { margin-top: 0; font-size: 1rem; }
+    pre {
+      background: #1e1e1e;
+      color: #ccc;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 12px;
+      overflow-x: auto;
+    }
+    #event-output {
+      height: 120px;
+      overflow-y: auto;
+      background: #1e1e1e;
+      color: #8f8;
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 11px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<h1>My Training Dashboard</h1>
+<p>This is a sample host page embedding the JumpTek widget inside its own layout.</p>
+
+<div class="page-layout">
+
+  <!--
+    ┌─────────────────────────────────────────────────────────────────┐
+    │  Step 1: Reserve a container for the widget.                    │
+    │          Optionally set data-jumptek-* attributes for config.   │
+    └─────────────────────────────────────────────────────────────────┘
+  -->
+  <div
+    id="jumptek-host"
+    data-jumptek-server="ws://localhost:8000"
+    data-jumptek-fps="15"
+  ></div>
+
+  <div class="info-panel">
+    <h2>Live event stream</h2>
+    <div id="event-output"></div>
+
+    <h2 style="margin-top:20px">Embedding code</h2>
+    <pre>&lt;!-- 1. Load the widget script --&gt;
+&lt;script src="jumptek-widget.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Reserve a container --&gt;
+&lt;div id="jumptek-host"&gt;&lt;/div&gt;
+
+&lt;!-- 3. Initialise --&gt;
+&lt;script&gt;
+  JumpTekWidget.init({
+    container: '#jumptek-host',
+    serverUrl: 'wss://your-server.example.com',
+    fps: 15,
+    onEvent: function(data) {
+      console.log(data);
+    }
+  });
+&lt;/script&gt;</pre>
+  </div>
+
+</div>
+
+<!--
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Step 2: Load the widget script (can be from a CDN or local).   │
+  └─────────────────────────────────────────────────────────────────┘
+-->
+<script src="jumptek-widget.js"></script>
+
+<!--
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Step 3: Call JumpTekWidget.init() with your options.           │
+  └─────────────────────────────────────────────────────────────────┘
+-->
+<script>
+  var output = document.getElementById('event-output');
+
+  JumpTekWidget.init({
+    container: '#jumptek-host',
+    // serverUrl falls back to data-jumptek-server attribute above
+    fps: 15,
+    onEvent: function (data) {
+      var line = document.createElement('div');
+      line.textContent = JSON.stringify(data);
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+      if (output.children.length > 30) {
+        output.removeChild(output.firstChild);
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

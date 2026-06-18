@@ -13,6 +13,8 @@ class Settings(BaseModel):
     default_fps: float = Field(default=30.0)
     max_frames_debug_save: int = Field(default=200)
     debug_output_dir: str = Field(default="/tmp/jumptek-debug")
+    # Comma-separated list of allowed CORS origins; use "*" to allow all origins.
+    cors_allow_origins: str = Field(default="*")
 
 
 @lru_cache(maxsize=1)
